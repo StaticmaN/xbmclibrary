@@ -1,6 +1,6 @@
 <?php
 	include_once "../config/XBMCLibraryConstants.php";	
-	include_once "../services/ServiceAbstractFactory.php";
+	include_once "../business/services/ServiceAbstractFactory.php";
 	
 	//Obtenemos de la petición el método HTTP y la URI
 	$method = $_SERVER['REQUEST_METHOD'];
@@ -26,20 +26,24 @@
 	array_shift($uriParts);
 	
 	//Ejecutamos la operación REST que corresponda con el método.
-	$result = null;
-	switch ($method){
-		case "GET":
-			$result = $service->get($uriParts);
-			break;
-		case "POST":
-			$result = $service->post($uriParts);
-			break;
-		case "PUT":
-			$result = $service->put($uriParts);
-			break;
-		case "DELETE":
-			$result = $service->delete($uriParts);
-			break;
+	try{
+		switch ($method){
+			case "GET":
+				$result = $service->get($uriParts);
+				break;
+			case "POST":
+				$result = $service->post($uriParts);
+				break;
+			case "PUT":
+				$result = $service->put($uriParts);
+				break;
+			case "DELETE":
+				$result = $service->delete($uriParts);
+				break;
+		}
+	}catch(Exception $e){
+		echo 'Caught exception: ',  $e->getMessage(), "\n";
+		die;
 	}
 	
 	echo "-&gt;&nbsp;" . implode("<BR>-&gt;&nbsp;", $result);

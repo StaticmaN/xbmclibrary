@@ -1,13 +1,12 @@
 <?php
 	class LibraryOperations {
+		private static $exclude_file_list = array(".", "..");
+		
 		public static function listDirectory ($directoryPath){
-			$entries = array();
-			if ($directory = opendir($directoryPath)) {
-				while (false !== ($entry = readdir($directory))) {
-					if (($entry!=".")&&($entry!=".."))
-					array_push($entries,$entry); 
-				}
-				closedir($directory);
+
+			if (is_dir($directoryPath)){
+				$entries = scandir($directoryPath);
+				$entries = array_diff($entries, LibraryOperations::$exclude_file_list);
 			}
 			
 			return $entries;

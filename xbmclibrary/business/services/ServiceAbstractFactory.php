@@ -2,7 +2,7 @@
 	include_once "MoviesService.php";
 	include_once "TVShowsService.php";
 	include_once "../config/XBMCLibraryConstants.php";
-	include_once "../exceptions/ServiceNotFoundException.php";
+	include_once "../model/exceptions/ServiceNotFoundException.php";
 	
 	class ServiceAbstractFactory {
 		public static function getService($serviceName){
