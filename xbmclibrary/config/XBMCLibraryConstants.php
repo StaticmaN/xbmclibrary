@@ -1,10 +1,10 @@
 <?php
 	class XBMCLibraryConstants {
-		public static $REST_CONTROLLER_CONTEXTPATH = 'rs';
-		public static $MOVIES_SERVICE_NAME = 'movies';
-		public static $MOVIES_SERVICE_DIRECTORY = 'D:/public/movies';
-		public static $TVSHOWS_SERVICE_NAME = 'tvshows';
-		public static $TVSHOWS_SERVICE_DIRECTORY = 'D:/public/tvshows';
+		const REST_CONTROLLER_CONTEXTPATH = 'rs';
+		const MOVIES_SERVICE_NAME = 'movies';
+		const MOVIES_SERVICE_DIRECTORY = 'D:/public/movies';
+		const TVSHOWS_SERVICE_NAME = 'tvshows';
+		const TVSHOWS_SERVICE_DIRECTORY = 'D:/public/tvshows';
 	}
 
 ?>

@@ -1,5 +1,4 @@
 <?php
-	class ServiceNotFoundException extends Exception {
-		
+	class ServiceNotFoundException extends Exception {		
 	}
 ?>

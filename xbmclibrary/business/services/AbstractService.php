@@ -1,6 +1,4 @@
 <?php
-	include_once "../model/exceptions/RestOperationNotImplementedException.php";
-
 	abstract class AbstractService {
 		protected $serviceName;
 		

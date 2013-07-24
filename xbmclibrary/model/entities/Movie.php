@@ -1,6 +1,4 @@
 <?php
-	include_once "Video.php";
-    
 	class Movie extends Video{
 		//Título original
 		public $originalTitle;

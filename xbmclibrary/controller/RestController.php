@@ -1,6 +1,5 @@
 <?php
-	include_once "../config/XBMCLibraryConstants.php";	
-	include_once "../business/services/ServiceAbstractFactory.php";
+	include_once "AutoClassLoader.php";
 	
 	//Obtenemos de la petición el método HTTP y la URI
 	$method = $_SERVER['REQUEST_METHOD'];
@@ -12,7 +11,7 @@
 	//Eliminamos del array el contexto de la aplicación y del controlador
 	$isControllerPath = false;
 	while((!$isControllerPath)||(count($uriParts)==0)){
-		$isControllerPath = ($uriParts[0]==XBMCLibraryConstants::$REST_CONTROLLER_CONTEXTPATH); 
+		$isControllerPath = ($uriParts[0]==XBMCLibraryConstants::REST_CONTROLLER_CONTEXTPATH); 
 		array_shift($uriParts);
 	}
 	
@@ -20,13 +19,13 @@
 	$serviceName = $uriParts[0];
 	
 	//Obtenemos el servicio utilizando la factoría
-	$service = ServiceAbstractFactory::getService($serviceName);
-	
-	//Eliminamos de los elementos de la uri el nombre del servicio, dejando así sólo los parámetros
-	array_shift($uriParts);
-	
-	//Ejecutamos la operación REST que corresponda con el método.
 	try{
+		$service = ServiceAbstractFactory::getService($serviceName);
+	
+		//Eliminamos de los elementos de la uri el nombre del servicio, dejando así sólo los parámetros
+		array_shift($uriParts);
+		
+		//Ejecutamos la operación REST que corresponda con el método.
 		switch ($method){
 			case "GET":
 				$result = $service->get($uriParts);
@@ -42,9 +41,10 @@
 				break;
 		}
 	}catch(Exception $e){
-		echo 'Caught exception: ',  $e->getMessage(), "\n";
-		die;
+		$result = new RestError();
+		$result->codigo = $e->getCode();
+		$result->mensaje = $e->getMessage();
 	}
 	
-	echo "-&gt;&nbsp;" . implode("<BR>-&gt;&nbsp;", $result);
+	echo json_encode($result);
 ?>

@@ -1,18 +1,13 @@
 <?php
-	include_once "MoviesService.php";
-	include_once "TVShowsService.php";
-	include_once "../config/XBMCLibraryConstants.php";
-	include_once "../model/exceptions/ServiceNotFoundException.php";
-	
 	class ServiceAbstractFactory {
 		public static function getService($serviceName){
 			$service = null;
 			
 			switch ($serviceName){
-				case XBMCLibraryConstants::$MOVIES_SERVICE_NAME:
+				case XBMCLibraryConstants::MOVIES_SERVICE_NAME:
 					$service = new MoviesService();
 					break;
-				case XBMCLibraryConstants::$TVSHOWS_SERVICE_NAME:
+				case XBMCLibraryConstants::TVSHOWS_SERVICE_NAME:
 					$service = new TVShowsService();
 					break;
 				default: 

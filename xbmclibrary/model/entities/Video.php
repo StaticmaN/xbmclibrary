@@ -1,6 +1,4 @@
 <?php
-	include_once "Actor.php";
-	
 	class Video {
 		//Id
 		public $id;

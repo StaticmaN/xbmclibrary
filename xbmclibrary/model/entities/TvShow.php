@@ -1,6 +1,4 @@
 <?php
-	include_once "Video.php";
-	
 	class TvShow extends Video{
 		//Número de temporadas
 		public $seasons;
