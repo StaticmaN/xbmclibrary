@@ -9,7 +9,7 @@
 			if(count($param)==0){
 				$result = $this->getList();
 			}else{
-				$result = $this->getSingle($param);
+				$result = $this->getSingle($param[0]);
 			}
 			return $result;
 		}
