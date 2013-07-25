@@ -43,7 +43,7 @@
 	}catch(Exception $e){
 		$result = new RestError();
 		$result->codigo = $e->getCode();
-		$result->mensaje = $e->getMessage();
+		$result->mensaje = utf8_encode($e->getMessage());
 	}
 	
 	echo json_encode($result);
