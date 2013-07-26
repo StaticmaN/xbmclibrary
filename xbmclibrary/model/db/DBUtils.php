@@ -1,15 +1,14 @@
 <?php
 
 	class DBUtils {
-		
-		public static function getThumbsInfo($xml, $addRoot = false){
+		public static function getThumbs($xml, $addRoot = false){
 			if ($addRoot){
 				$xml = "<root>" . $xml . "</root>";
 			}
 			$dom = simplexml_load_string($xml);
 			$thumbs = array();
 			foreach ($dom->thumb as $thumbURL) {
-				array_push($thumbs, (string) $thumbURL['preview']);
+				array_push($thumbs, (string) $thumbURL);
 			}
 			return $thumbs;
 		}
