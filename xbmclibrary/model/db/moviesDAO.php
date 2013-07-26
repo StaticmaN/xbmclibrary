@@ -1,43 +1,46 @@
 <?php
 
-	class TVShowsDAO {
+	class moviesDAO implements AbstractDAO{
 		
 		/**
-		 * Método para obtener la información de las series de TV registradas en la librería
+		 * Método para obtener la información de las películas registradas en la librería
 		 * 
 		 * @throws DBException
 		 * @return array
 		 */
-		public static function getTVShows(){
+		public static function getResources(){
 			//Conectamos con la base de datos
 			$mysqli = new mysqli(XBMCLibraryConstants::DB_HOST, 
 								 XBMCLibraryConstants::DB_USER, 
 								 XBMCLibraryConstants::DB_PASSWORD, 
-								 XBMCLibraryConstants::DB_MOVIESDB);
+								XBMCLibraryConstants::DB_MOVIESDB);
 			
 			if (mysqli_connect_errno()) {
 				$errorMsg = "No se ha podido establecer la conexión con la base de datos: " . $mysqli->connect_error;
 				$errorCode = $mysqli->connect_errno;
 			}else{
 				//Ejecutamos la consulta
-				$query = "SELECT idShow,
-						         c00 as title,
-						         c04 as rating,
-						         c06 as thumbs,
-						         c08 as genres,
-						         c13 as mpaa,
-						         c14 as network
-						  FROM tvshowview";
+				$query = "SELECT idMovie,
+						         c00 as title, 
+						         c05 as rating, 
+						         c04 as votes,
+						         c07 as year,
+						         c08 as posters,
+						         c11 as duration,
+						         c12 as mpaa,
+						         c14 as genres,
+						         dateAdded
+						  FROM movieview";
 				
 				if ($result = $mysqli->query($query)) {
 					
 					if ($result->num_rows > 0) {
-						$tvshows = array ();
+						$movies = array ();
 					
 						while($row = $result->fetch_array()) {
-							$tvshow = new BaseTVShowInfo();
-							self::getBasicTVShowInfo($row, $tvshow);
-							array_push($tvshows, $tvshow);
+							$movie = new BaseMovieInfo();
+							self::getBasicMovieInfo($row, $movie);
+							array_push($movies, $movie);
 						}
 					}
 				}else{
@@ -55,46 +58,55 @@
 			}
 			
 			//Devolvemos la lista de películas encotnradas
-			return $tvshows;
+			return $movies;
 		}
 		
 		/**
-		 * Retorna la información completa de una serie de televisión regitrada en la 
+		 * Retorna la información completa de una película regitrada en la 
 		 * librería de XBMC.
 		 * 
-		 * @param unknown $id Identificador de la serie de televisión
-		 * @return Movie Infomación de la serie de televisión
+		 * @param unknown $id Identificador de la película
+		 * @return Movie Infomación de la película
 		 */
-		public static function getTVShow($id){
+		public static function getResource($id){
 			if (!empty($id)){
 				//Conectamos con la base de datos
 				$mysqli = new mysqli(XBMCLibraryConstants::DB_HOST,
-									 XBMCLibraryConstants::DB_USER,
-									 XBMCLibraryConstants::DB_PASSWORD,
-									 XBMCLibraryConstants::DB_MOVIESDB);
+						XBMCLibraryConstants::DB_USER,
+						XBMCLibraryConstants::DB_PASSWORD,
+						XBMCLibraryConstants::DB_MOVIESDB);
 					
 				if (mysqli_connect_errno()) {
 					$errorMsg = "No se ha podido establecer la conexión con la base de datos: " . $mysqli->connect_error;
 					$errorCode = $mysqli->connect_errno;
 				}else{
 					//Ejecutamos la consulta
-					$query = "SELECT idShow,
-									 c00 as title,
-									 c01 as plot,
-									 c04 as rating,
-									 c05 as premiered,
-									 c06 as thumbs,
-									 c08 as genres,
-									 c09 as originalTitle,
-									 c11 as fanarts,
-									 c13 as mpaa,
-									 c14 as network
-							  FROM tvshowview WHERE idShow = " . $id;
+					$query = "SELECT idMovie,
+							         c00 as title, 
+							         c01 as plot,
+							         c05 as rating, 
+							         c04 as votes,
+							         c06 as writer,
+							         c07 as year,
+							         c08 as posters,
+							         c09 as imdbid,
+							         c11 as duration,
+							         c12 as mpaa,
+							         c14 as genres,
+							         dateadded,
+							         c15 as director,
+							         c16 as originaltitle,
+							         c18 as studio,
+							         c19 as trailer,
+							         c20 as fanarts,
+							         c21 as country
+							  FROM movieview
+							  WHERE idMovie = " . $id;
 					
 					if ($result = $mysqli->query($query)) {		
 						if ($result->num_rows == 1) {
 							$row = $result->fetch_assoc();
-							$movie = self::getCompleteTVShowInfo($row);
+							$movie = self::getCompleteMovieInfo($row);
 						}
 					}else{
 						$errorMsg = "Error al consultar la base de datos: " . $mysqli->error;
@@ -106,8 +118,8 @@
 							         t1.strRole as role,
 							         t2.strActor as name,
 							         t2.strThumb as thumbs
-							  FROM actorlinktvshow as t1, actors as t2
-							  WHERE t1.idShow = " . $id . " and 
+							  FROM actorlinkmovie as t1, actors as t2
+							  WHERE t1.idMovie = " . $id . " and 
 							        t1.idActor = t2.idActor";
 					
 					if ($result = $mysqli->query($query)) {
@@ -145,29 +157,38 @@
 		/**
 		 * 
 		 * @param unknown $row
-		 * @return BaseTVShowInfo
+		 * @return BaseMovieInfo
 		 */
-		private static function getBasicTVShowInfo($row, BaseTVShowInfo & $tvshow){
-			$tvshow->id      = $row["idShow"];
-			$tvshow->title   = utf8_encode($row["title"]);
-			$tvshow->rating  = $row["rating"];
-			$tvshow->thumbs = DBUtils::getThumbs($row["thumbs"], TRUE);
-			$tvshow->genres  = explode(" / ", utf8_encode($row["genres"]));
-			$tvshow->mpaa    = $row["mpaa"];
-			$tvshow->network = $row["network"];
+		private static function getBasicMovieInfo($row, BaseMovieInfo & $movie){
+			$movie->id        = $row["idMovie"];
+			$movie->title     = utf8_encode($row["title"]);
+			$movie->rating    = $row["rating"];
+			$movie->votes     = $row["votes"];
+			$movie->year      = $row["year"];
+			$movie->posters   = DBUtils::getThumbs($row["posters"], TRUE);
+			$movie->duration  = $row["duration"];
+			$movie->mpaa      = $row["mpaa"];
+			$movie->genres    = explode(" / ", utf8_encode($row["genres"]));
+			$movie->dateAdded = $row["dateAdded"];
 		}
 		
-		private static function getCompleteTVShowInfo($row){
-			$tvshow = new TVShow();
+		private static function getCompleteMovieInfo($row){
+			$movie = new Movie();
 			
-			self::getBasicTVShowInfo($row, $tvshow);
+			self::getBasicMovieInfo($row, $movie);
 			
-			$tvshow->plot          = utf8_encode($row["plot"]);
-			$tvshow->premiered     = utf8_encode($row["premiered"]);
-			$tvshow->originalTitle = utf8_encode($row["originalTitle"]);
-			$tvshow->fanarts       = DBUtils::getThumbs($row["fanarts"]);
+			$movie->plot          = utf8_encode($row["plot"]);
+			$movie->writer        = utf8_encode($row["writer"]);
+			$movie->imdbId        = $row["imdbid"];
+			$movie->director      = utf8_encode($row["director"]);
+			$movie->studio        = utf8_encode($row["studio"]);
+			$movie->originalTitle = utf8_encode($row["originaltitle"]);
+			$movie->trailer       = DBUtils::getTrailer($row["trailer"]);
+			$movie->fanarts       = DBUtils::getThumbs($row["fanarts"]);
+			$movie->country       = utf8_encode($row["country"]);
+			$movie->actors        = NULL;
 			
-			return $tvshow;
+			return $movie;
 		}
 		
 		private static function getActorInfo($row){
