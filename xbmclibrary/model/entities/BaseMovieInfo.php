@@ -15,9 +15,9 @@
 		//Número de votos
 		public $votes;
 		//Array con URLs a las imágenes con los posters
-		public $posters;
+		public $thumbs;
 		// Duración de la película
-		public $duration;
+		public $length;
 		// Fecha donde se añadió a la librería
 		public $dateAdded;
 	}
