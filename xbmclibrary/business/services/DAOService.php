@@ -7,6 +7,11 @@
 		public function __construct($servicename){
 			$this->serviceName = $servicename;
 			$this->daoName = $this->serviceName . 'DAO';
+			
+			// Comprobamos que la clase DAO existe
+			if (!class_exists($this->daoName)){
+				throw new ServiceNotFoundException("Servicio {$this->serviceName} no encontrado", -1);
+			}
 		}
 		
 		/**

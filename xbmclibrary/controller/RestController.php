@@ -20,7 +20,7 @@
 	
 	//Obtenemos el servicio utilizando la factoría
 	try{
-		$service = ServiceAbstractFactory::getService($serviceName);
+		$service = new DAOService($serviceName);
 	
 		//Eliminamos de los elementos de la uri el nombre del servicio, dejando así sólo los parámetros
 		array_shift($uriParts);
