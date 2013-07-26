@@ -2,12 +2,12 @@
 	class TVShowsService extends AbstractService{
 		
 		protected function getList(){
-			$result = TVShowsDAO::getTVShows();
+			$result = LibraryOperations::listDirectory(XBMCLibraryConstants::TVSHOWS_SERVICE_DIRECTORY);
 			return $result;
 		}
 		
 		protected function getSingle($id){
-			$result = TVShowsDAO::getTVShow($id);
+			$result = array('consulta de un registro concreto');
 			return $result;
 		}
 	}
