@@ -106,7 +106,7 @@
 					if ($result = $mysqli->query($query)) {		
 						if ($result->num_rows == 1) {
 							$row = $result->fetch_assoc();
-							$movie = self::getCompleteMovieInfo($row);
+							$movie = self::getCompleteInfoMovie($row);
 						}
 					}else{
 						$errorMsg = "Error al consultar la base de datos: " . $mysqli->error;
@@ -165,14 +165,14 @@
 			$movie->rating    = $row["rating"];
 			$movie->votes     = $row["votes"];
 			$movie->year      = $row["year"];
-			$movie->posters   = DBUtils::getThumbs($row["posters"], TRUE);
+			$movie->posters   = DBUtils::getThumbsInfo($row["posters"], TRUE);
 			$movie->duration  = $row["duration"];
 			$movie->mpaa      = $row["mpaa"];
 			$movie->genres    = explode(" / ", utf8_encode($row["genres"]));
 			$movie->dateAdded = $row["dateAdded"];
 		}
 		
-		private static function getCompleteMovieInfo($row){
+		private static function getCompleteInfoMovie($row){
 			$movie = new Movie();
 			
 			self::getBasicMovieInfo($row, $movie);
@@ -184,7 +184,7 @@
 			$movie->studio        = utf8_encode($row["studio"]);
 			$movie->originalTitle = utf8_encode($row["originaltitle"]);
 			$movie->trailer       = DBUtils::getTrailer($row["trailer"]);
-			$movie->fanarts       = DBUtils::getThumbs($row["fanarts"]);
+			$movie->fanarts       = DBUtils::getThumbsInfo($row["fanarts"]);
 			$movie->country       = utf8_encode($row["country"]);
 			$movie->actors        = NULL;
 			
@@ -197,7 +197,7 @@
 			$actor->order = $row["movieorder"];
 			$actor->name = utf8_encode($row["name"]);
 			$actor->role = utf8_encode($row["role"]);
-			$actor->thumbs = DBUtils::getThumbs($row["thumbs"], TRUE);
+			$actor->thumbs = DBUtils::getThumbsInfo($row["thumbs"], TRUE);
 			
 			return $actor;
 		}
