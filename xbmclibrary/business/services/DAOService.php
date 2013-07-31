@@ -21,11 +21,9 @@
 		 * @return unknown
 		 */
 		public function  get($param){
-			if(count($param)==0){
-				$result = $this->getList();
-			}else{
-				$result = $this->getSingle($param[0]);
-			}
+			$daoClass = $this->daoName;
+			$dao = new $daoClass();
+			$result = $dao->get($param);
 			return $result;
 		}
 		
@@ -57,18 +55,6 @@
 		 */
 		public function  delete($param){
 			throw new RestOperationNotImplementedException("Método DELETE no implementado para el servicio " . $this->serviceName);
-		}
-		
-		protected function getList(){
-			$daoClass = $this->daoName;
-			$result = $daoClass::getResources();
-			return $result;
-		}
-		
-		protected function getSingle($id){
-			$daoClass = $this->daoName;
-			$result = $daoClass::getResource($id);
-			return $result;
 		}
 }
 

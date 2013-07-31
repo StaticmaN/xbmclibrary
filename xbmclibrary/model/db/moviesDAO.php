@@ -1,6 +1,20 @@
 <?php
 
 	class moviesDAO implements AbstractDAO{
+		/**
+		 * Método para consultas sobre el recurso
+		 *
+		 * @param unknown $param
+		 * @return unknown
+		 */
+		public function  get($param){
+			if(count($param)==0){
+				$result = $this->getResources();
+			}else{
+				$result = $this->getResource($param[0]);
+			}
+			return $result;
+		}
 		
 		/**
 		 * Método para obtener la información de las películas registradas en la librería
@@ -8,7 +22,7 @@
 		 * @throws DBException
 		 * @return array
 		 */
-		public static function getResources(){
+		private function getResources(){
 			//Conectamos con la base de datos
 			$mysqli = DBUtils::connect();
 			
@@ -29,7 +43,7 @@
 		 * @param unknown $id Identificador de la película
 		 * @return Movie Infomación de la película
 		 */
-		public static function getResource($id){
+		private function getResource($id){
 			if (!empty($id)&&(is_numeric($id))){
 				//Conectamos con la base de datos
 				$mysqli = DBUtils::connect();
